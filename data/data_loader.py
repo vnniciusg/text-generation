@@ -1,5 +1,4 @@
 import numpy as np
-from loguru import logger
 from tensorflow.keras.utils import get_file
 from tensorflow.data import Dataset
 
@@ -12,11 +11,10 @@ class ShakespeareDataLoader:
         self.config = config
         self.text = self._load_raw_data()
         self.vocab, self.char2idx, self.idx2char = self._build_vocab()
-        logger.info(f"the vocab size is: {len(self.vocab)}")
 
     def _load_raw_data(self) -> str:
         path_to_file = get_file("shakespeare.txt", self.config.DATA_URL)
-        return open(path_to_file, 'rb').read().decode(encoding='utf-8')
+        return open(path_to_file, "rb").read().decode(encoding="utf-8")
 
     def _build_vocab(self):
         vocab = sorted(set(self.text))
@@ -30,6 +28,6 @@ class ShakespeareDataLoader:
         sequences = self._create_sequences()
         dataset = sequences.map(self._split_input_target)
         return dataset.shuffle(self.config.DATA_BUFFER_SIZE).batch(self.config.DATA_BATCH_SIZE, drop_remainder=True)
-    
+
     def _split_input_target(self, chunk):
         return chunk[:-1], chunk[1:]
